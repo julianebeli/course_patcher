@@ -1,6 +1,8 @@
 import __init__
 import os
 from pathlib import Path
+from subprocess import call
+from platform import system
 
 
 class Storer:
@@ -44,5 +46,13 @@ class Storer:
     def display_job_count(self):
         self.completed_jobs += 1
         remaining = len(self.jobs) - self.completed_jobs
-        os.system('clear')
+        self.cls()
         print(f"{remaining} jobs to go ...")
+
+    def cls(self):
+        # https://stackoverflow.com/questions/1854/python-what-os-am-i-running-on
+        os = system()
+        if os == 'Linux':
+            call('clear', shell=True)
+        elif os == 'Windows':
+            call('cls', shell=True)

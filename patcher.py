@@ -40,10 +40,11 @@ def patch_courses(course_id_list):
 
 
 if __name__ == "__main__":
+
     SERVER = 'prod'
     api = API(SERVER)
 
-    SOURCE_DATA = 'initial_source.csv'
+    SOURCE_DATA = 'source.csv'
     storer = Storer(source_file=SOURCE_DATA)
 
     patch_courses(storer.jobs)
