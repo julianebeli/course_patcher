@@ -1,7 +1,6 @@
-__init__.py
-cmd.exe
-initial_source.csv
-record.py
-__pycache__
 .gitignore
-store.py
+__init__.py
+__pycache__
+data
+cmd.exe
+
