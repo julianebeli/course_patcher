@@ -1,4 +1,5 @@
 import __init__
+import os
 from pathlib import Path
 
 
@@ -12,7 +13,8 @@ class Storer:
 
         self.processed: set(int) = self.setup(self.store_path)
         self.unprocessed: set(int) = self.get_source(self.source_path)
-        self.jobs = self.diff()
+        self.jobs: list = self.diff()
+        self.completed_jobs: int = 0
 
     def diff(self):
         return list(self.unprocessed - self.processed)
@@ -21,21 +23,26 @@ class Storer:
         if not Path.exists(file):
             exit('No source data found')
         with open(file) as f:
-            data = set([int(y) for y in [x.strip().split(',')[0] for x in f.readlines()[1:]]])
-        return data
+            return set([int(y) for y in [x.strip().split(',')[0] for x in f.readlines()[1:]]])
 
     def setup(self, file):
         Path.touch(file)
         with open(file, 'r') as f:
-            data = set([int(y) for y in [x.strip() for x in f.readlines()] if y])
-            return data
+            return set([int(y) for y in [x.strip() for x in f.readlines()] if y])
 
     def record(self, course_id):
-        print(f"adding {course_id} to record")
         with open(self.store_path, 'a') as f:
             f.write(f"{course_id}\n")
+        self.display_job_count()
 
     def report(self, api_result):
-        print(api_result)
         with open(self.error_path, 'a') as f:
-            f.write(f"{api_result}\n")
+            msg = f"\n{api_result.method.params}\n{api_result.results[0]}\n"
+            f.write(msg)
+        self.display_job_count()
+
+    def display_job_count(self):
+        self.completed_jobs += 1
+        remaining = len(self.jobs) - self.completed_jobs
+        os.system('clear')
+        print(f"{remaining} jobs to go ...")
